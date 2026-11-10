@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>On Engineers & Construction</title>
+<meta name="description" content="Civil construction, contractor and manpower management, and gate pass registration for site workers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F3F4F5; --ink:#14212E; --navy:#0E2A47; --steel:#56667A; --line:#C9D0D6; --hi:#F2B705; --on-navy:#F3F6F9;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#101820;--ink:#E8EDF1;--steel:#9AA8B5;--line:#2B3946;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#101820;--ink:#E8EDF1;--steel:#9AA8B5;--line:#2B3946;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.6 "Source Sans 3",system-ui,sans-serif}
+h1,h2,h3{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;line-height:1.05;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--hi);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header.top{background:var(--navy);color:var(--on-navy)}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:18px;padding-bottom:18px;flex-wrap:wrap}
+.brand{font:700 22px/1 "Barlow Condensed",sans-serif;letter-spacing:.04em;text-decoration:none}
+nav{display:flex;gap:22px;font-size:16px;flex-wrap:wrap}
+nav a{text-decoration:none;opacity:.85}
+nav a:hover{opacity:1;text-decoration:underline;text-decoration-color:var(--hi);text-underline-offset:6px}
+
+.hero{background:var(--navy);color:var(--on-navy);padding:56px 0 72px}
+.hero .wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:48px;align-items:center}
+.hero h1{font-size:clamp(44px,7vw,84px);margin-bottom:20px}
+.hero p.lead{font-size:20px;max-width:34ch;color:#C9D6E2;margin:0 0 28px}
+.btn{display:inline-block;background:var(--hi);color:#14212E;font-weight:600;padding:14px 26px;border-radius:2px;text-decoration:none;border:0;cursor:pointer;font-size:17px;font-family:inherit}
+.btn:hover{background:#FFC929}
+.btn.ghost{background:transparent;color:inherit;border:2px solid currentColor;margin-left:10px}
+.board{background:#F7F7F4;color:#14212E;border:6px solid #14212E;box-shadow:0 0 0 3px var(--hi);}
+.board .stripe{height:22px;background:repeating-linear-gradient(-45deg,#14212E 0 14px,var(--hi) 14px 28px)}
+.board .in{padding:22px 24px 26px}
+.board h2{font-size:30px;margin-bottom:10px}
+.board ul{margin:0;padding:0;list-style:none}
+.board li{padding:10px 0;border-top:1px solid #C9D0D6;font-size:17px}
+
+section{padding:76px 0}
+section h2{font-size:clamp(34px,5vw,52px);margin-bottom:12px}
+.intro{color:var(--steel);max-width:52ch;margin:0 0 40px}
+.rows{border-top:2px solid var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1.4fr;gap:32px;padding:26px 0;border-bottom:1px solid var(--line)}
+.row h3{font-size:28px}
+.row p{margin:0;color:var(--steel);max-width:56ch}
+
+.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--ink)}
+.steps li{counter-increment:s;padding:22px 20px 0 0}
+.steps li::before{content:counter(s);display:block;font:700 44px/1 "Barlow Condensed",sans-serif;color:var(--hi);-webkit-text-stroke:1px var(--ink);margin-bottom:10px}
+.steps strong{display:block;font-size:19px}
+.steps span{color:var(--steel);font-size:16px;display:block}
+
+.register{background:var(--navy);color:var(--on-navy)}
+.register .wrap{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+.register p{color:#C9D6E2;max-width:46ch;margin:0}
+.register small{display:block;margin-top:10px;color:#9FB2C4;font-size:15px}
+#note{min-height:1.4em;margin-top:12px;color:var(--hi);font-size:15px}
+
+.contact dl{display:grid;grid-template-columns:140px 1fr;gap:14px 24px;margin:0;border-top:2px solid var(--ink);padding-top:22px}
+.contact dt{font-weight:600}
+.contact dd{margin:0;color:var(--steel)}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--steel);font-size:15px}
+
+@media (max-width:820px){
+  .hero .wrap{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr;gap:8px}
+  .steps{grid-template-columns:1fr 1fr}
+  .btn.ghost{margin:12px 0 0}
+  .contact dl{grid-template-columns:1fr;gap:2px 0}
+  .contact dd{margin-bottom:12px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">ON ENGINEERS &amp; CONSTRUCTION</a>
+    <nav aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#entry">Site entry</a>
+      <a href="#register">Gate pass</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Civil construction with every worker accounted for.</h1>
+      <p class="lead">We build, manage contractors and keep sites safe and compliant, from first excavation to handover.</p>
+      <a class="btn" href="#register">Register for a gate pass</a>
+      <a class="btn ghost" href="#services">Our services</a>
+    </div>
+    <aside class="board" aria-label="Site entry notice">
+      <div class="stripe"></div>
+      <div class="in">
+        <h2>Site entry notice</h2>
+        <ul>
+          <li>Every worker needs a gate pass before entering site.</li>
+          <li>Register once with your ID and bank details.</li>
+          <li>Site admin verifies and approves your entry.</li>
+          <li>Carry the printed pass at all times.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <h2>About us</h2>
+    <p class="intro">On Engineers &amp; Construction provides civil construction and site manpower services. Our team has worked on large sites across India, including Reliance and JSW projects, Odisha, Bilaspur and Akaltara in Chhattisgarh, and Delhi.</p>
+    <div class="rows">
+      <div class="row"><h3>Safety on every site</h3><p>Workers are registered, inducted and issued a gate pass before they enter.</p></div>
+      <div class="row"><h3>Records you can audit</h3><p>Attendance, contractor and statutory details are kept in one organised system.</p></div>
+      <div class="row"><h3>Clear daily reporting</h3><p>Owners get a short daily report of manpower, work done and issues.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="services" style="padding-top:0">
+  <div class="wrap">
+    <h2>What we do</h2>
+    <p class="intro">Practical construction and site administration, run by people who have worked on live sites.</p>
+    <div class="rows">
+      <div class="row"><h3>Civil construction</h3><p>Residential and commercial buildings, foundations, slabs, brickwork and finishing, delivered to drawings and schedule.</p></div>
+      <div class="row"><h3>Roads and drainage</h3><p>Excavation, drainage lines and site development with daily progress recorded and reported.</p></div>
+      <div class="row"><h3>Contractor and manpower management</h3><p>Sourcing, onboarding and tracking skilled and unskilled workers across contractors and sites.</p></div>
+      <div class="row"><h3>Labour compliance</h3><p>Worker records, PF/UAN details, safety induction and gate pass control kept organised and audit-ready.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" style="padding-top:0">
+  <div class="wrap">
+    <h2>Projects</h2>
+    <p class="intro">Sites where our team has worked.</p>
+    <div class="rows">
+      <div class="row"><h3>Reliance</h3><p>Civil construction work and site manpower support at a Reliance project.</p></div>
+      <div class="row"><h3>JSW, Odisha</h3><p>Civil construction and manpower support at the JSW site in Odisha.</p></div>
+      <div class="row"><h3>Bilaspur and Akaltara, Chhattisgarh</h3><p>Construction and site work across Bilaspur and Akaltara.</p></div>
+      <div class="row"><h3>Delhi</h3><p>Civil construction and site management in Delhi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="entry" style="padding-top:0">
+  <div class="wrap">
+    <h2>How site entry works</h2>
+    <p class="intro">A simple process so no one enters site without being registered and verified.</p>
+    <ol class="steps">
+      <li><strong>Register</strong><span>Fill the online gate pass form.</span></li>
+      <li><strong>Verify</strong><span>Admin checks your details and documents.</span></li>
+      <li><strong>Approve</strong><span>Your status changes to approved.</span></li>
+      <li><strong>Collect pass</strong><span>Receive your printed gate pass with your ID.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="register" id="register">
+  <div class="wrap">
+    <div>
+      <h2>Gate pass registration</h2>
+      <p>Takes about five minutes. Keep your Aadhaar, bank passbook and UAN number ready.</p>
+      <small>We collect only the name, contact, ID and bank details needed for site entry and payroll. They are visible only to site admin.</small>
+    </div>
+    <div>
+      <a class="btn" id="formLink" href="#register">Open registration form</a>
+      <div id="note" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <p class="intro">Questions about a project or your gate pass? Reach the site office.</p>
+    <dl>
+      <dt>Phone</dt><dd><a href="tel:+918232905269">+91 82329 05269</a></dd>
+      <dt>WhatsApp</dt><dd><a href="https://wa.me/918232905269" target="_blank" rel="noopener">Message us on WhatsApp</a></dd>
+      <dt>Email</dt><dd><a href="mailto:manjay8232@gmail.com">manjay8232@gmail.com</a></dd>
+      <dt>Office</dt><dd>Site office details on request. Call or message us.</dd>
+      <dt>Hours</dt><dd>Monday to Saturday, 9:00 am to 6:00 pm</dd>
+    </dl>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 On Engineers &amp; Construction. All rights reserved.</div>
+</footer>
+
+<script>
+  // Paste your Google Form fill link between the quotes to activate the button.
+  var FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeoV-M1C9fh1c3CP4wzmD-J_ya82OevWK7Upez3jZv_FAMAbw/viewform";
+  var link = document.getElementById("formLink");
+  var note = document.getElementById("note");
+  if (FORM_URL) {
+    link.href = FORM_URL;
+    link.target = "_blank";
+    link.rel = "noopener";
+  } else {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      note.textContent = "Form link not added yet. Add your Google Form link in the code.";
+    });
+  }
+</script>
+</body>
+</html>
