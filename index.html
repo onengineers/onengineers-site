@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,17 +70,11 @@ footer{text-align:center;color:#8a96a7;font-size:11px;padding:25px}
     <div><h2>ON ENGINEERS GROUP</h2><small>HRMS MANAGEMENT PORTAL</small></div>
   </div>
   <div class="top-actions">
-    <select id="company">
+    <select id="company" aria-label="Select company">
       <option value="all">All Companies</option>
-      <option>ON Engineers & Construction</option>
-      <option>ON Engineers & Infratech Pvt. Ltd.</option>
     </select>
-    <select id="project">
+    <select id="project" aria-label="Select project">
       <option value="all">All Projects</option>
-      <option>Reliance Jamnagar</option>
-      <option>JSW MPCL Nariyara</option>
-      <option>JSW Utkal Energy</option>
-      <option>JSW Akaltara</option>
     </select>
   </div>
 </header>
@@ -194,6 +187,64 @@ function openModule(name){
 }
 createCards("dashboardModules",modules.slice(0,8));
 createCards("allModules",modules);
+
+// Read-only master-data connection. The Apps Script deployment is currently
+// private, so this will work only for viewers authorised by that deployment.
+const HRMS_MASTER_URL = "https://script.google.com/macros/s/AKfycbzAIZYUtzdXm00aea59RAChDezwqPQgFEZHSOConYUwcFYnLAXYGPWuetiDQhSF4qFfzQ/exec";
+let hrmsCompanies = [];
+let hrmsProjects = [];
+
+function loadHrmsMasters(){
+  const callbackName = "onHrmsMastersLoaded";
+  window[callbackName] = function(data){
+    try {
+      if (!data || !Array.isArray(data.companies) || !Array.isArray(data.projects)) return;
+      hrmsCompanies = data.companies;
+      hrmsProjects = data.projects;
+      populateCompanyDropdown();
+      populateProjectDropdown();
+    } finally {
+      delete window[callbackName];
+      const old = document.getElementById("hrms-master-script");
+      if (old) old.remove();
+    }
+  };
+  const script = document.createElement("script");
+  script.id = "hrms-master-script";
+  script.src = HRMS_MASTER_URL + "?action=masters&callback=" + callbackName;
+  script.onerror = function(){
+    const old = document.getElementById("hrms-master-script");
+    if (old) old.remove();
+    delete window[callbackName];
+    console.warn("HRMS master data could not be loaded. Check Apps Script deployment access.");
+  };
+  document.head.appendChild(script);
+}
+
+function populateCompanyDropdown(){
+  const select = document.getElementById("company");
+  const selected = select.value || "all";
+  select.innerHTML = '<option value="all">All Companies</option>' +
+    hrmsCompanies.map(c => `<option value="${c.companyId}">${escapeHtml(c.companyName)}</option>`).join("");
+  select.value = hrmsCompanies.some(c => c.companyId === selected) ? selected : "all";
+}
+
+function populateProjectDropdown(){
+  const select = document.getElementById("project");
+  const companyId = document.getElementById("company").value;
+  const selected = select.value || "all";
+  const filtered = companyId === "all" ? hrmsProjects : hrmsProjects.filter(p => p.companyId === companyId);
+  select.innerHTML = '<option value="all">All Projects</option>' +
+    filtered.map(p => `<option value="${p.projectId}">${escapeHtml(p.projectName)}</option>`).join("");
+  select.value = filtered.some(p => p.projectId === selected) ? selected : "all";
+}
+
+function escapeHtml(value){
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+
+document.getElementById("company").addEventListener("change", populateProjectDropdown);
+loadHrmsMasters();
 </script>
 </body>
 </html>
