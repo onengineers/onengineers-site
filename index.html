@@ -6,90 +6,77 @@
 <title>ON Engineers Group | HRMS</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-:root {
-  --navy:#142b49;
-  --blue:#2463a6;
-  --bg:#f3f6fb;
-  --white:#fff;
-  --text:#263449;
-  --muted:#718096;
-  --border:#e5eaf1;
-}
+:root{--navy:#142b49;--blue:#2463a6;--bg:#f3f6fb;--text:#263449;--muted:#718096;--border:#e5eaf1}
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,select,input{font:inherit}
-.topbar{height:68px;background:var(--navy);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:5}
+button,select,input,textarea{font:inherit}
+.topbar{height:68px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:5;gap:10px}
 .brand{display:flex;align-items:center;gap:12px}
-.logo{width:40px;height:40px;border:2px solid white;border-radius:9px;display:grid;place-items:center;font-weight:bold}
-.brand h2{font-size:16px;margin:0 0 4px}
-.brand small{color:#cbd8e8}
-.top-actions{display:flex;align-items:center;gap:10px}
-.top-actions select{max-width:190px}
-select,input{padding:9px;border:1px solid var(--border);border-radius:7px;background:white;color:var(--text)}
+.logo{width:40px;height:40px;border:2px solid #fff;border-radius:9px;display:grid;place-items:center;font-weight:bold}
+.brand h2{font-size:16px;margin:0 0 4px}.brand small{color:#cbd8e8}
+.top-actions{display:flex;align-items:center;gap:10px}.top-actions select{max-width:190px}
+select,input,textarea{padding:9px;border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text);width:100%}
+.top-actions select{width:auto}
 .layout{display:flex;min-height:calc(100vh - 68px)}
-.sidebar{width:245px;background:white;border-right:1px solid var(--border);padding:18px 12px;flex-shrink:0}
+.sidebar{width:245px;background:#fff;border-right:1px solid var(--border);padding:18px 12px;flex-shrink:0}
 .sidebar h4{font-size:10px;color:#8996a8;letter-spacing:1.2px;padding:8px 12px;margin:12px 0 5px}
 .navbtn{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:7px;color:#475569;cursor:pointer;font-size:13px;margin:2px 0}
 .navbtn:hover,.navbtn.active{background:#eaf2fb;color:var(--blue);font-weight:bold}
-.main{padding:26px;width:100%;max-width:1500px;margin:auto}
-.welcome{background:linear-gradient(115deg,#17375e,#2878b9);padding:25px;border-radius:13px;color:white;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.welcome h1{font-size:23px;margin:0 0 8px}
-.welcome p{font-size:13px;color:#e1eafa;margin:0}
+.main{padding:26px;width:100%;max-width:1500px;margin:auto;min-width:0}
+.welcome{background:linear-gradient(115deg,#17375e,#2878b9);padding:25px;border-radius:13px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.welcome h1{font-size:23px;margin:0 0 8px}.welcome p{font-size:13px;color:#e1eafa;margin:0}
 .pill{background:#ffffff20;border:1px solid #ffffff55;padding:9px 13px;border-radius:20px;font-size:11px}
 .heading{font-size:17px;margin:25px 0 14px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:14px}
-.stat,.card,.panel{background:white;border:1px solid var(--border);border-radius:10px;padding:17px}
-.stat small{color:var(--muted);font-size:12px}
-.stat strong{display:block;font-size:25px;margin-top:9px;color:var(--navy)}
+.stat,.card,.panel{background:#fff;border:1px solid var(--border);border-radius:10px;padding:17px}
+.stat small{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:25px;margin-top:9px;color:var(--navy)}
 .modules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.card{cursor:pointer;transition:.15s}
-.card:hover{border-color:#8eb6e1;transform:translateY(-2px)}
+.card{cursor:pointer;transition:.15s}.card:hover{border-color:#8eb6e1;transform:translateY(-2px)}
 .symbol{width:39px;height:39px;background:#eaf2fb;color:var(--blue);border-radius:9px;display:grid;place-items:center;font-size:20px;margin-bottom:12px}
-.card h3{font-size:14px;margin:0 0 7px}
-.card p{font-size:11px;line-height:1.5;color:var(--muted);margin:0}
+.card h3{font-size:14px;margin:0 0 7px}.card p{font-size:11px;line-height:1.5;color:var(--muted);margin:0}
 .card button{margin-top:13px;border:0;background:transparent;color:var(--blue);font-size:12px;padding:0;cursor:pointer}
-.panel{margin-top:18px}
-.panel h3{font-size:15px;margin:0 0 12px}
-.panel p{font-size:13px;color:var(--muted);line-height:1.6}
+.panel{margin-top:18px}.panel h3{font-size:15px;margin:0 0 12px}.panel p{font-size:13px;color:var(--muted);line-height:1.6}
 .notice{padding:12px;background:#fff8e8;border:1px solid #f1dfb3;border-radius:8px;color:#76591b;font-size:12px;line-height:1.5;margin-top:20px}
-.hidden{display:none}
+.hidden{display:none!important}
 footer{text-align:center;color:#8a96a7;font-size:11px;padding:25px}
-@media(max-width:1000px){.modules{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){
- .layout{display:block}.sidebar{width:100%;display:flex;overflow-x:auto;padding:8px;gap:5px}
- .sidebar h4{display:none}.navbtn{white-space:nowrap;width:auto}
- .main{padding:15px}.modules{grid-template-columns:repeat(2,1fr)}
- .topbar{padding:0 12px}.brand small{display:none}.top-actions select{max-width:115px}
-}
-@media(max-width:420px){.modules{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
-
 .auth-screen{min-height:calc(100vh - 68px);display:grid;place-items:center;padding:24px}
 .auth-card{width:min(440px,100%);background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px;box-shadow:0 12px 35px #142b4914;text-align:center}
 .auth-card .logo{margin:0 auto 16px;background:var(--navy);color:#fff}
-.auth-card h1{font-size:21px;margin:0 0 8px;color:var(--navy)}
-.auth-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.auth-card h1{font-size:21px;margin:0 0 8px;color:var(--navy)}.auth-card p{font-size:13px;color:var(--muted);line-height:1.6}
 .auth-status{font-size:12px;min-height:20px;margin-top:14px;color:#76591b}
 .auth-status.error{color:#b42318}.auth-status.success{color:#167344}
 .user-chip{font-size:12px;color:#eaf2fb;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .signout{border:1px solid #ffffff66;background:transparent;color:#fff;border-radius:7px;padding:8px 10px;cursor:pointer;font-size:12px}
-@media(max-width:700px){.auth-screen{min-height:calc(100vh - 68px)}.auth-card{padding:23px}}
+/* employees */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar input{flex:1;min-width:200px;width:auto}.toolbar select{width:auto}
+.btn{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:7px;padding:9px 14px;cursor:pointer;font-size:13px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn:disabled{opacity:.6;cursor:wait}
+.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f3f6fb;text-align:left;padding:10px;color:#475569;white-space:nowrap}td{padding:10px;border-top:1px solid var(--border);white-space:nowrap}
+tr:hover td{background:#fafcff}.badge{padding:3px 9px;border-radius:12px;font-size:11px;background:#eef2f7}
+.badge.Active{background:#e3f6ec;color:#167344}.badge.Resigned,.badge.Terminated{background:#fdeceb;color:#b42318}
+.link{border:0;background:none;color:var(--blue);cursor:pointer;font-size:12px;padding:0 6px 0 0}
+.pager{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:var(--muted)}
+.overlay{position:fixed;inset:0;background:#0b1a2e99;z-index:20;display:grid;place-items:center;padding:14px}
+.modal{background:#fff;border-radius:12px;width:min(860px,100%);max-height:92vh;overflow:auto;padding:22px}
+.modal h3{margin:0 0 14px;color:var(--navy)}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.fgrid label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+.fgrid .wide{grid-column:1/-1}.fgrid input:disabled,.fgrid select:disabled,.fgrid textarea:disabled{background:#f3f6fb;color:#475569}
+.formmsg{font-size:12px;color:#b42318;min-height:18px;margin-top:10px}.modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#167344;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:30}
+@media(max-width:1000px){.modules{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.layout{display:block}.sidebar{width:100%;display:flex;overflow-x:auto;padding:8px;gap:5px}.sidebar h4{display:none}.navbtn{white-space:nowrap;width:auto}.main{padding:15px}.modules{grid-template-columns:repeat(2,1fr)}.topbar{padding:0 12px}.brand small,.user-chip{display:none}.top-actions select{max-width:115px}.fgrid{grid-template-columns:1fr}.auth-card{padding:23px}}
+@media(max-width:420px){.modules{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">
-    <div class="logo">ON</div>
-    <div><h2>ON ENGINEERS GROUP</h2><small>HRMS MANAGEMENT PORTAL</small></div>
-  </div>
+  <div class="brand"><div class="logo">ON</div><div><h2>ON ENGINEERS GROUP</h2><small>HRMS MANAGEMENT PORTAL</small></div></div>
   <div class="top-actions">
-    <select id="company" aria-label="Select company">
-      <option value="all">All Companies</option>
-    </select>
-    <select id="project" aria-label="Select project">
-      <option value="all">All Projects</option>
-    </select>
+    <select id="company" aria-label="Select company"><option value="all">All Companies</option></select>
+    <select id="project" aria-label="Select project"><option value="all">All Projects</option></select>
   </div>
-  <div class="user-chip" id="userChip" aria-live="polite"></div>
+  <div class="user-chip" id="userChip"></div>
   <button class="signout hidden" id="signOutButton" type="button" onclick="signOut()">Sign out</button>
 </header>
 
@@ -121,47 +108,53 @@ footer{text-align:center;color:#8a96a7;font-size:11px;padding:25px}
 
 <main class="main">
 <section id="dashboard">
-  <div class="welcome">
-    <div>
-      <h1>Human Resource Management System</h1>
-      <p>Centralised workforce, project and HR administration.</p>
-    </div>
-    <span class="pill">CENTRALISED HRMS</span>
-  </div>
-
+  <div class="welcome"><div><h1>Human Resource Management System</h1><p>Centralised workforce, project and HR administration.</p></div><span class="pill">CENTRALISED HRMS</span></div>
   <h2 class="heading">Management Overview</h2>
   <div class="stats">
-    <div class="stat"><small>Total Employees</small><strong>—</strong></div>
+    <div class="stat"><small>Total Employees</small><strong id="statEmp">—</strong></div>
     <div class="stat"><small>Present Today</small><strong>—</strong></div>
     <div class="stat"><small>Pending Approvals</small><strong>—</strong></div>
     <div class="stat"><small>Active Projects</small><strong>4</strong></div>
   </div>
   <h2 class="heading">HRMS Modules</h2>
   <div class="modules" id="dashboardModules"></div>
-  <div class="notice">Dashboard figures will be populated after secure backend integration. No employee information is currently being retrieved or displayed.</div>
 </section>
 
-<section id="modules" class="hidden">
-  <h2 class="heading">All HRMS Modules</h2>
-  <div class="modules" id="allModules"></div>
-</section>
+<section id="modules" class="hidden"><h2 class="heading">All HRMS Modules</h2><div class="modules" id="allModules"></div></section>
 
 <section id="modulePage" class="hidden">
-  <div class="welcome">
-    <div><h1 id="moduleTitle">HRMS Module</h1><p>ON Engineers Group – Central HRMS</p></div>
-    <span class="pill">MODULE WORKSPACE</span>
-  </div>
+  <div class="welcome"><div><h1 id="moduleTitle">HRMS Module</h1><p>ON Engineers Group – Central HRMS</p></div><span class="pill">MODULE WORKSPACE</span></div>
   <div class="panel">
-    <h3 id="moduleHeading">Module Overview</h3>
-    <p id="moduleDescription"></p>
-    <p><strong>Current status:</strong> Interface prepared. Database connection and authorised operations are pending implementation.</p>
+    <h3 id="moduleHeading">Module Overview</h3><p id="moduleDescription"></p>
+    <p><strong>Current status:</strong> Interface prepared. Operations are pending implementation.</p>
     <button class="navbtn active" onclick="showPage('modules')">← Back to All Modules</button>
   </div>
 </section>
 
+<section id="employeePage" class="hidden">
+  <div class="welcome"><div><h1>Employee Management</h1><p>Employee registration, verification and master records.</p></div><span class="pill" id="empCount">Loading…</span></div>
+  <div class="panel">
+    <div class="toolbar">
+      <input id="empSearch" placeholder="Search name, ID, EP no, mobile, designation…">
+      <select id="empStatus"><option value="all">All Status</option></select>
+      <button class="btn" type="button" onclick="loadEmployees()">↻ Refresh</button>
+      <button class="btn primary hidden" id="addEmpBtn" type="button" onclick="openEmployeeForm('')">+ Add Employee</button>
+    </div>
+    <div class="formmsg" id="empListMsg"></div>
+    <div class="tablewrap"><table><thead><tr><th>Emp ID</th><th>EP No</th><th>Name</th><th>Designation</th><th>Company</th><th>Project</th><th>Mobile</th><th>Status</th><th></th></tr></thead><tbody id="empBody"></tbody></table></div>
+    <div class="pager"><span id="pageInfo"></span><span><button class="btn" type="button" onclick="gotoPage(-1)">‹ Prev</button> <button class="btn" type="button" onclick="gotoPage(1)">Next ›</button></span></div>
+  </div>
+</section>
 <footer>© 2026 ON Engineers Group | Internal HR & Administration Portal</footer>
 </main>
 </div>
+
+<div class="overlay hidden" id="empModal"><div class="modal">
+  <h3 id="empModalTitle">Employee</h3>
+  <div class="fgrid" id="empForm"></div>
+  <div class="formmsg" id="empFormMsg"></div>
+  <div class="actions"><button class="btn" type="button" onclick="closeEmployeeForm()">Close</button><button class="btn primary" id="empSaveBtn" type="button" onclick="saveEmployee()">Save</button></div>
+</div></div>
 
 <script>
 const modules = [
@@ -188,142 +181,165 @@ const modules = [
  ["Approvals & Audit","✅","Approval workflows, decision history and audit logs."],
  ["Reimbursements & Advances","💳","Expense claims, advances and recovery tracking."]
 ];
-
-function createCards(target,items){
- document.getElementById(target).innerHTML=items.map(m=>`
- <article class="card" onclick="openModule('${m[0]}')">
- <div class="symbol">${m[1]}</div><h3>${m[0]}</h3>
- <p>${m[2]}</p><button type="button">Open workspace →</button>
- </article>`).join("");
-}
+const $=id=>document.getElementById(id);
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function createCards(t,items){$(t).innerHTML=items.map(m=>`<article class="card" data-m="${escapeHtml(m[0])}"><div class="symbol">${m[1]}</div><h3>${escapeHtml(m[0])}</h3><p>${escapeHtml(m[2])}</p><button type="button">Open workspace →</button></article>`).join("");
+ $(t).onclick=e=>{const c=e.target.closest(".card");if(c)openModule(c.dataset.m);};}
 function showPage(page,button){
- ["dashboard","modules","modulePage"].forEach(id=>document.getElementById(id).classList.add("hidden"));
- document.getElementById(page).classList.remove("hidden");
+ ["dashboard","modules","modulePage","employeePage"].forEach(id=>$(id).classList.add("hidden"));
+ $(page).classList.remove("hidden");
  document.querySelectorAll(".navbtn").forEach(b=>b.classList.remove("active"));
  if(button)button.classList.add("active");
 }
 function openModule(name){
+ if(name==="Employee Management"){showPage("employeePage");loadEmployees();return;}
  const m=modules.find(x=>x[0]===name);
- document.getElementById("moduleTitle").textContent=name;
- document.getElementById("moduleHeading").textContent=name+" Workspace";
- document.getElementById("moduleDescription").textContent=m?m[2]:"HRMS module workspace.";
+ $("moduleTitle").textContent=name;$("moduleHeading").textContent=name+" Workspace";
+ $("moduleDescription").textContent=m?m[2]:"HRMS module workspace.";
  showPage("modulePage");
 }
-createCards("dashboardModules",modules.slice(0,8));
-createCards("allModules",modules);
+createCards("dashboardModules",modules.slice(0,8));createCards("allModules",modules);
 
-// ---------- HRMS endpoint and Google Identity Services configuration ----------
-const HRMS_MASTER_URL = "https://script.google.com/macros/s/AKfycbzAIZYUtzdXm00aea59RAChDezwqPQgFEZHSOConYUwcFYnLAXYGPWuetiDQhSF4qFfzQ/exec";
-const GOOGLE_CLIENT_ID = "652789086013-l6lb4jnj8gs9tlfkv8nuoppvi3agmbij.apps.googleusercontent.com";
-let hrmsCompanies = [];
-let hrmsProjects = [];
-let loginTimeout = null;
-let currentUser = null;
+// ---------- config & API ----------
+const HRMS_URL="https://script.google.com/macros/s/AKfycbzAIZYUtzdXm00aea59RAChDezwqPQgFEZHSOConYUwcFYnLAXYGPWuetiDQhSF4qFfzQ/exec";
+const GOOGLE_CLIENT_ID="652789086013-l6lb4jnj8gs9tlfkv8nuoppvi3agmbij.apps.googleusercontent.com";
+let hrmsCompanies=[],hrmsProjects=[],sessionToken="",currentUser=null;
 
-function setAuthStatus(message, kind){
-  const el=document.getElementById("authStatus");
-  el.textContent=message;
-  el.className="auth-status"+(kind?" "+kind:"");
-}
+function api(action,params){return new Promise((resolve,reject)=>{
+ const cb="hrmsCb_"+Date.now()+"_"+Math.floor(Math.random()*1e6),s=document.createElement("script");
+ const timer=setTimeout(()=>{done();reject(new Error("Server did not respond. Check the Apps Script deployment (Anyone) and try again."));},30000);
+ function done(){clearTimeout(timer);delete window[cb];s.remove();}
+ window[cb]=function(r){done();
+  if(r&&r.session){forceSignOut(r.message);reject(new Error(r.message));return;}
+  if(!r||!r.ok){reject(new Error((r&&r.message)||"Request failed."));return;}
+  resolve(r);};
+ s.onerror=function(){done();reject(new Error("Could not reach the HRMS server. Check the deployment and try again."));};
+ const q=Object.assign({action:action,callback:cb},sessionToken?{token:sessionToken}:{},params||{});
+ s.src=HRMS_URL+"?"+Object.keys(q).map(k=>k+"="+encodeURIComponent(q[k])).join("&");
+ document.head.appendChild(s);
+});}
 
+// ---------- auth ----------
+function setAuthStatus(m,k){const e=$("authStatus");e.textContent=m;e.className="auth-status"+(k?" "+k:"");}
 function initializeGoogleSignIn(){
-  if(!window.google || !google.accounts || !google.accounts.id){
-    setAuthStatus("Google sign-in could not load. Refresh the page and try again.","error");
-    return;
-  }
-  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredential,auto_select:false});
-  google.accounts.id.renderButton(document.getElementById("googleSignInButton"),{theme:"outline",size:"large",shape:"rectangular",text:"signin_with",width:280});
-  setAuthStatus("Sign in using your registered Google account.");
+ if(!window.google||!google.accounts||!google.accounts.id){setAuthStatus("Google sign-in could not load. Refresh the page and try again.","error");return;}
+ google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredential,auto_select:false});
+ google.accounts.id.renderButton($("googleSignInButton"),{theme:"outline",size:"large",shape:"rectangular",text:"signin_with",width:280});
+ setAuthStatus("Sign in using your registered Google account.");
 }
-
-// Login via JSONP (script tag). Works reliably with Apps Script, no iframe/postMessage needed.
-function handleGoogleCredential(response){
-  if(!response || !response.credential){setAuthStatus("Google did not return a sign-in credential. Please try again.","error");return;}
-  setAuthStatus("Verifying your account and HRMS access…");
-
-  const cbName="hrmsLoginCb_"+Date.now();
-  const scriptId="hrms-login-script";
-  const old=document.getElementById(scriptId);if(old)old.remove();
-
-  function cleanup(){
-    if(loginTimeout){clearTimeout(loginTimeout);loginTimeout=null;}
-    delete window[cbName];
-    const s=document.getElementById(scriptId);if(s)s.remove();
-  }
-
-  window[cbName]=function(result){
-    cleanup();
-    if(!result || !result.ok){setAuthStatus((result && result.message)||"Access denied. Contact HR/Admin.","error");return;}
-    onLoginSuccess(result.user);
-  };
-
-  loginTimeout=setTimeout(function(){
-    cleanup();
-    setAuthStatus("No response from the HRMS server. Check that the Apps Script deployment is set to 'Anyone' and the URL is correct.","error");
-  },25000);
-
-  const script=document.createElement("script");
-  script.id=scriptId;
-  script.src=HRMS_MASTER_URL+"?action=verifyLogin&credential="+encodeURIComponent(response.credential)+"&callback="+cbName;
-  script.onerror=function(){
-    cleanup();
-    setAuthStatus("Could not reach the HRMS server. Check the Apps Script deployment (Who has access: Anyone) and try again.","error");
-  };
-  document.head.appendChild(script);
+function handleGoogleCredential(resp){
+ if(!resp||!resp.credential){setAuthStatus("Google did not return a sign-in credential. Please try again.","error");return;}
+ setAuthStatus("Verifying your account and HRMS access…");
+ api("verifyLogin",{credential:resp.credential}).then(r=>{sessionToken=r.token;onLoginSuccess(r.user);}).catch(e=>setAuthStatus(e.message,"error"));
 }
-
 function onLoginSuccess(user){
-  currentUser=user;
-  document.getElementById("authScreen").classList.add("hidden");
-  document.getElementById("hrmsLayout").classList.remove("hidden");
-  document.getElementById("userChip").textContent=currentUser.name || currentUser.email;
-  document.getElementById("signOutButton").classList.remove("hidden");
-  loadHrmsMasters();
+ currentUser=user;$("authScreen").classList.add("hidden");$("hrmsLayout").classList.remove("hidden");
+ $("userChip").textContent=user.name||user.email;$("signOutButton").classList.remove("hidden");
+ showPage("dashboard");loadHrmsMasters();
 }
-
 function signOut(){
-  currentUser=null;
-  if(loginTimeout){clearTimeout(loginTimeout);loginTimeout=null;}
-  document.getElementById("hrmsLayout").classList.add("hidden");
-  document.getElementById("authScreen").classList.remove("hidden");
-  document.getElementById("userChip").textContent="";
-  document.getElementById("signOutButton").classList.add("hidden");
-  setAuthStatus("You have signed out. Sign in again to continue.");
-  if(window.google && google.accounts && google.accounts.id)google.accounts.id.disableAutoSelect();
+ if(sessionToken)api("logout").catch(()=>{});
+ sessionToken="";currentUser=null;employees=[];
+ $("hrmsLayout").classList.add("hidden");$("authScreen").classList.remove("hidden");
+ $("userChip").textContent="";$("signOutButton").classList.add("hidden");$("statEmp").textContent="—";
+ closeEmployeeForm();setAuthStatus("You have signed out. Sign in again to continue.");
+ if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();
 }
+function forceSignOut(msg){sessionToken="";signOut();setAuthStatus(msg||"Session expired. Please sign in again.","error");}
 
+// ---------- masters ----------
 function loadHrmsMasters(){
-  const callbackName="onHrmsMastersLoaded";
-  window[callbackName]=function(data){
-    try{
-      if(!data || !Array.isArray(data.companies) || !Array.isArray(data.projects))return;
-      hrmsCompanies=data.companies;hrmsProjects=data.projects;
-      populateCompanyDropdown();populateProjectDropdown();
-    }finally{
-      delete window[callbackName];
-      const old=document.getElementById("hrms-master-script");if(old)old.remove();
-    }
-  };
-  const script=document.createElement("script");
-  script.id="hrms-master-script";
-  script.src=HRMS_MASTER_URL+"?action=masters&callback="+callbackName;
-  script.onerror=function(){const old=document.getElementById("hrms-master-script");if(old)old.remove();delete window[callbackName];console.warn("HRMS master data could not be loaded. Check Apps Script deployment access.");};
-  document.head.appendChild(script);
+ api("masters").then(d=>{hrmsCompanies=d.companies;hrmsProjects=d.projects;populateCompanyDropdown();populateProjectDropdown();renderEmployees();}).catch(e=>console.warn(e.message));
 }
-
 function populateCompanyDropdown(){
-  const select=document.getElementById("company");const selected=select.value||"all";
-  select.innerHTML='<option value="all">All Companies</option>'+hrmsCompanies.map(c=>`<option value="${escapeHtml(c.companyId)}">${escapeHtml(c.companyName)}</option>`).join("");
-  select.value=hrmsCompanies.some(c=>c.companyId===selected)?selected:"all";
+ const s=$("company"),sel=s.value||"all";
+ s.innerHTML='<option value="all">All Companies</option>'+hrmsCompanies.map(c=>`<option value="${escapeHtml(c.companyId)}">${escapeHtml(c.companyName)}</option>`).join("");
+ s.value=hrmsCompanies.some(c=>c.companyId===sel)?sel:"all";
 }
 function populateProjectDropdown(){
-  const select=document.getElementById("project");const companyId=document.getElementById("company").value;const selected=select.value||"all";
-  const filtered=companyId==="all"?hrmsProjects:hrmsProjects.filter(p=>p.companyId===companyId);
-  select.innerHTML='<option value="all">All Projects</option>'+filtered.map(p=>`<option value="${escapeHtml(p.projectId)}">${escapeHtml(p.projectName)}</option>`).join("");
-  select.value=filtered.some(p=>p.projectId===selected)?selected:"all";
+ const s=$("project"),co=$("company").value,sel=s.value||"all";
+ const f=co==="all"?hrmsProjects:hrmsProjects.filter(p=>p.companyId===co);
+ s.innerHTML='<option value="all">All Projects</option>'+f.map(p=>`<option value="${escapeHtml(p.projectId)}">${escapeHtml(p.projectName)}</option>`).join("");
+ s.value=f.some(p=>p.projectId===sel)?sel:"all";
 }
-function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
-document.getElementById("company").addEventListener("change",populateProjectDropdown);
+const companyName=id=>(hrmsCompanies.find(c=>c.companyId===id)||{}).companyName||id||"";
+const projectName=id=>(hrmsProjects.find(p=>p.projectId===id)||{}).projectName||id||"";
+$("company").addEventListener("change",()=>{populateProjectDropdown();page=1;renderEmployees();});
+$("project").addEventListener("change",()=>{page=1;renderEmployees();});
+
+// ---------- employees ----------
+const PAGE_SIZE=25;let employees=[],canEdit=false,page=1,editingId="";
+const EMP_FORM=[
+ ["Employee_ID","Employee ID","text"],["EP_Number","EP Number","text"],["Company_ID","Company *","company"],
+ ["Project_ID","Project","project"],["Full_Name","Full Name *","text"],["Father_Name","Father's Name","text"],
+ ["Gender","Gender","select",["Male","Female","Other"]],["DOB","Date of Birth","date"],["Mobile","Mobile (10 digits)","text"],
+ ["Email","Email","text"],["Designation","Designation","text"],["Department","Department","text"],
+ ["Joining_Date","Joining Date","date"],["Employment_Type","Employment Type","select",["Permanent","Contractual","Daily Wage","Trainee","Consultant"]],
+ ["Employee_Status","Status","select",["Active","Inactive","Resigned","Terminated"]],["Last_Working_Date","Last Working Date","date"],
+ ["UAN","UAN","text"],["ESIC_Number","ESIC Number","text"],["Bank_Account","Bank Account","text"],["Address","Address (max 300 chars)","textarea"]
+];
+function loadEmployees(){
+ $("empListMsg").textContent="";$("empCount").textContent="Loading…";
+ api("employees").then(r=>{employees=r.employees;canEdit=r.canEdit;$("addEmpBtn").classList.toggle("hidden",!canEdit);
+  $("statEmp").textContent=employees.length;page=1;fillStatusFilter();renderEmployees();})
+ .catch(e=>{$("empListMsg").textContent=e.message;$("empCount").textContent="Error";});
+}
+function fillStatusFilter(){
+ const s=$("empStatus"),cur=s.value||"all",set=new Set(["Active","Inactive","Resigned","Terminated"]);
+ employees.forEach(e=>e.Employee_Status&&set.add(e.Employee_Status));
+ s.innerHTML='<option value="all">All Status</option>'+[...set].map(x=>`<option>${escapeHtml(x)}</option>`).join("");
+ s.value=set.has(cur)?cur:"all";
+}
+function filteredEmployees(){
+ const q=$("empSearch").value.trim().toLowerCase(),st=$("empStatus").value,co=$("company").value,pr=$("project").value;
+ return employees.filter(e=>(co==="all"||e.Company_ID===co)&&(pr==="all"||e.Project_ID===pr)&&(st==="all"||e.Employee_Status===st)&&
+  (!q||[e.Employee_ID,e.EP_Number,e.Full_Name,e.Mobile,e.Designation,e.Department].join(" ").toLowerCase().includes(q)));
+}
+function renderEmployees(){
+ const list=filteredEmployees(),pages=Math.max(1,Math.ceil(list.length/PAGE_SIZE));
+ if(page>pages)page=pages;
+ const from=(page-1)*PAGE_SIZE,rows=list.slice(from,from+PAGE_SIZE);
+ $("empBody").innerHTML=rows.map(e=>`<tr><td>${escapeHtml(e.Employee_ID)}</td><td>${escapeHtml(e.EP_Number)}</td><td><strong>${escapeHtml(e.Full_Name)}</strong></td><td>${escapeHtml(e.Designation)}</td><td>${escapeHtml(companyName(e.Company_ID))}</td><td>${escapeHtml(projectName(e.Project_ID))}</td><td>${escapeHtml(e.Mobile)}</td><td><span class="badge ${escapeHtml(e.Employee_Status)}">${escapeHtml(e.Employee_Status)}</span></td><td><button class="link" data-id="${escapeHtml(e.Employee_ID)}">${canEdit?"Edit":"View"}</button></td></tr>`).join("")||'<tr><td colspan="9" style="text-align:center;color:#718096">No employees found.</td></tr>';
+ $("pageInfo").textContent=list.length?`Showing ${from+1}–${from+rows.length} of ${list.length}`:"";
+ $("empCount").textContent=list.length+" employees";
+}
+function gotoPage(d){page=Math.max(1,page+d);renderEmployees();}
+$("empBody").addEventListener("click",e=>{const b=e.target.closest("button[data-id]");if(b)openEmployeeForm(b.dataset.id);});
+$("empSearch").addEventListener("input",()=>{page=1;renderEmployees();});
+$("empStatus").addEventListener("change",()=>{page=1;renderEmployees();});
+
+function opts(list,val,blank){const l=list.slice();if(val&&!l.includes(val))l.push(val);
+ return (blank?'<option value=""></option>':"")+l.map(x=>`<option${x===val?" selected":""}>${escapeHtml(x)}</option>`).join("");}
+function projectOptions(co,val){
+ const f=hrmsProjects.filter(p=>!co||p.companyId===co);
+ return '<option value=""></option>'+f.map(p=>`<option value="${escapeHtml(p.projectId)}"${p.projectId===val?" selected":""}>${escapeHtml(p.projectName)}</option>`).join("");
+}
+function refreshProjectField(){const co=$("f_Company_ID").value,cur=$("f_Project_ID").value;$("f_Project_ID").innerHTML=projectOptions(co,cur);}
+function openEmployeeForm(id){
+ editingId=id;const r=id?(employees.find(e=>e.Employee_ID===id)||{}):{Employee_Status:"Active"},ro=!canEdit;
+ $("empModalTitle").textContent=id?(canEdit?"Edit Employee — ":"Employee — ")+id:"Add Employee";
+ $("empForm").innerHTML=EMP_FORM.map(f=>{
+  const n=f[0],t=f[2],v=r[n]||"",dis=(ro||n==="Employee_ID")?" disabled":"",i="f_"+n;let c;
+  if(t==="company")c=`<select id="${i}" onchange="refreshProjectField()"${dis}><option value=""></option>`+hrmsCompanies.map(x=>`<option value="${escapeHtml(x.companyId)}"${x.companyId===v?" selected":""}>${escapeHtml(x.companyName)}</option>`).join("")+`</select>`;
+  else if(t==="project")c=`<select id="${i}"${dis}>${projectOptions(r.Company_ID||"",v)}</select>`;
+  else if(t==="select")c=`<select id="${i}"${dis}>${opts(f[3],v,n!=="Employee_Status")}</select>`;
+  else if(t==="textarea")c=`<textarea id="${i}" rows="2" maxlength="300"${dis}>${escapeHtml(v)}</textarea>`;
+  else if(t==="date")c=`<input id="${i}" type="date" value="${escapeHtml(v)}"${dis}>`;
+  else c=`<input id="${i}" type="text" maxlength="150" value="${escapeHtml(v)}"${dis}${n==="Employee_ID"&&!id?' placeholder="Auto-generated"':""}>`;
+  return `<div${t==="textarea"?' class="wide"':""}><label for="${i}">${f[1]}</label>${c}</div>`;}).join("");
+ $("empFormMsg").textContent="";$("empSaveBtn").classList.toggle("hidden",ro);$("empModal").classList.remove("hidden");
+}
+function closeEmployeeForm(){$("empModal").classList.add("hidden");}
+function saveEmployee(){
+ const d={};EMP_FORM.forEach(f=>{d[f[0]]=$("f_"+f[0]).value.trim();});d.Employee_ID=editingId;
+ if(!d.Full_Name){$("empFormMsg").textContent="Full Name is required.";return;}
+ if(!d.Company_ID){$("empFormMsg").textContent="Please select a company.";return;}
+ if(d.Mobile&&!/^\d{10}$/.test(d.Mobile)){$("empFormMsg").textContent="Mobile must be exactly 10 digits.";return;}
+ const b=$("empSaveBtn");b.disabled=true;b.textContent="Saving…";$("empFormMsg").textContent="";
+ api("saveEmployee",{data:JSON.stringify(d)}).then(r=>{closeEmployeeForm();toast((r.created?"Employee added: ":"Employee updated: ")+r.employeeId);loadEmployees();})
+ .catch(e=>{$("empFormMsg").textContent=e.message;}).finally(()=>{b.disabled=false;b.textContent="Save";});
+}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3500);}
 window.addEventListener("load",initializeGoogleSignIn);
 </script>
 </body>
