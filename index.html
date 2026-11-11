@@ -1,265 +1,330 @@
-/**
- * ON ENGINEERS GROUP HRMS - SAFE FOUNDATION BACKEND (v2, JSONP login)
- *
- * Provides:
- *   1. Google ID-token verification against User_Roles  (GET action=verifyLogin)
- *   2. Read-only active Company_Master / Project_Master data (GET action=masters)
- *   3. Non-destructive diagnostic functions
- *
- * Does NOT create, rename, clear, or rewrite any sheets.
- *
- * SETUP:
- *   1. Paste this whole file (replace everything).
- *   2. Run  authorizeAndCheck  once and accept permissions.
- *   3. Deploy > Manage deployments > pencil > Version: New version > Deploy
- *        Execute as: Me   |   Who has access: Anyone
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ON Engineers Group | HRMS</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root {
+  --navy:#142b49;
+  --blue:#2463a6;
+  --bg:#f3f6fb;
+  --white:#fff;
+  --text:#263449;
+  --muted:#718096;
+  --border:#e5eaf1;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,select,input{font:inherit}
+.topbar{height:68px;background:var(--navy);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;border:2px solid white;border-radius:9px;display:grid;place-items:center;font-weight:bold}
+.brand h2{font-size:16px;margin:0 0 4px}
+.brand small{color:#cbd8e8}
+.top-actions{display:flex;align-items:center;gap:10px}
+.top-actions select{max-width:190px}
+select,input{padding:9px;border:1px solid var(--border);border-radius:7px;background:white;color:var(--text)}
+.layout{display:flex;min-height:calc(100vh - 68px)}
+.sidebar{width:245px;background:white;border-right:1px solid var(--border);padding:18px 12px;flex-shrink:0}
+.sidebar h4{font-size:10px;color:#8996a8;letter-spacing:1.2px;padding:8px 12px;margin:12px 0 5px}
+.navbtn{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:7px;color:#475569;cursor:pointer;font-size:13px;margin:2px 0}
+.navbtn:hover,.navbtn.active{background:#eaf2fb;color:var(--blue);font-weight:bold}
+.main{padding:26px;width:100%;max-width:1500px;margin:auto}
+.welcome{background:linear-gradient(115deg,#17375e,#2878b9);padding:25px;border-radius:13px;color:white;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.welcome h1{font-size:23px;margin:0 0 8px}
+.welcome p{font-size:13px;color:#e1eafa;margin:0}
+.pill{background:#ffffff20;border:1px solid #ffffff55;padding:9px 13px;border-radius:20px;font-size:11px}
+.heading{font-size:17px;margin:25px 0 14px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:14px}
+.stat,.card,.panel{background:white;border:1px solid var(--border);border-radius:10px;padding:17px}
+.stat small{color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:25px;margin-top:9px;color:var(--navy)}
+.modules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{cursor:pointer;transition:.15s}
+.card:hover{border-color:#8eb6e1;transform:translateY(-2px)}
+.symbol{width:39px;height:39px;background:#eaf2fb;color:var(--blue);border-radius:9px;display:grid;place-items:center;font-size:20px;margin-bottom:12px}
+.card h3{font-size:14px;margin:0 0 7px}
+.card p{font-size:11px;line-height:1.5;color:var(--muted);margin:0}
+.card button{margin-top:13px;border:0;background:transparent;color:var(--blue);font-size:12px;padding:0;cursor:pointer}
+.panel{margin-top:18px}
+.panel h3{font-size:15px;margin:0 0 12px}
+.panel p{font-size:13px;color:var(--muted);line-height:1.6}
+.notice{padding:12px;background:#fff8e8;border:1px solid #f1dfb3;border-radius:8px;color:#76591b;font-size:12px;line-height:1.5;margin-top:20px}
+.hidden{display:none}
+footer{text-align:center;color:#8a96a7;font-size:11px;padding:25px}
+@media(max-width:1000px){.modules{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){
+ .layout{display:block}.sidebar{width:100%;display:flex;overflow-x:auto;padding:8px;gap:5px}
+ .sidebar h4{display:none}.navbtn{white-space:nowrap;width:auto}
+ .main{padding:15px}.modules{grid-template-columns:repeat(2,1fr)}
+ .topbar{padding:0 12px}.brand small{display:none}.top-actions select{max-width:115px}
+}
+@media(max-width:420px){.modules{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
 
-var HRMS_CONFIG = {
-  SPREADSHEET_ID: '', // Blank for container-bound script; otherwise the spreadsheet ID.
-  GOOGLE_CLIENT_ID: '652789086013-l6lb4jnj8gs9tlfkv8nuoppvi3agmbij.apps.googleusercontent.com',
-  COMPANY_SHEET: 'Company_Master',
-  PROJECT_SHEET: 'Project_Master',
-  USER_ROLES_SHEET: 'User_Roles'
-};
+.auth-screen{min-height:calc(100vh - 68px);display:grid;place-items:center;padding:24px}
+.auth-card{width:min(440px,100%);background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px;box-shadow:0 12px 35px #142b4914;text-align:center}
+.auth-card .logo{margin:0 auto 16px;background:var(--navy);color:#fff}
+.auth-card h1{font-size:21px;margin:0 0 8px;color:var(--navy)}
+.auth-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.auth-status{font-size:12px;min-height:20px;margin-top:14px;color:#76591b}
+.auth-status.error{color:#b42318}.auth-status.success{color:#167344}
+.user-chip{font-size:12px;color:#eaf2fb;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.signout{border:1px solid #ffffff66;background:transparent;color:#fff;border-radius:7px;padding:8px 10px;cursor:pointer;font-size:12px}
+@media(max-width:700px){.auth-screen{min-height:calc(100vh - 68px)}.auth-card{padding:23px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">ON</div>
+    <div><h2>ON ENGINEERS GROUP</h2><small>HRMS MANAGEMENT PORTAL</small></div>
+  </div>
+  <div class="top-actions">
+    <select id="company" aria-label="Select company">
+      <option value="all">All Companies</option>
+    </select>
+    <select id="project" aria-label="Select project">
+      <option value="all">All Projects</option>
+    </select>
+  </div>
+  <div class="user-chip" id="userChip" aria-live="polite"></div>
+  <button class="signout hidden" id="signOutButton" type="button" onclick="signOut()">Sign out</button>
+</header>
 
-/* -------------------- SPREADSHEET HELPERS -------------------- */
+<section class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="logo">ON</div>
+    <h1>ON Engineers Group HRMS</h1>
+    <p>Sign in with your registered Google account. Access is granted only when your email is active in the HRMS User_Roles sheet.</p>
+    <div id="googleSignInButton" style="display:flex;justify-content:center;min-height:44px"></div>
+    <div class="auth-status" id="authStatus" role="status">Loading secure sign-in…</div>
+  </div>
+</section>
 
-function hrmsSpreadsheet_() {
-  if (HRMS_CONFIG.SPREADSHEET_ID) {
-    return SpreadsheetApp.openById(HRMS_CONFIG.SPREADSHEET_ID);
-  }
-  var active = SpreadsheetApp.getActiveSpreadsheet();
-  if (!active) {
-    throw new Error('No spreadsheet is linked. Bind this script to the HRMS database or set SPREADSHEET_ID.');
-  }
-  return active;
+<div class="layout hidden" id="hrmsLayout">
+<aside class="sidebar">
+  <h4>MAIN MENU</h4>
+  <button class="navbtn active" onclick="showPage('dashboard',this)">▦ Dashboard</button>
+  <button class="navbtn" onclick="showPage('modules',this)">▤ All HRMS Modules</button>
+  <h4>ADMINISTRATION</h4>
+  <button class="navbtn" onclick="openModule('Employee Management')">♙ Employees</button>
+  <button class="navbtn" onclick="openModule('Attendance Management')">◷ Attendance</button>
+  <button class="navbtn" onclick="openModule('Leave Management')">▣ Leave</button>
+  <button class="navbtn" onclick="openModule('Payroll & Overtime')">₹ Payroll</button>
+  <button class="navbtn" onclick="openModule('Documents & Compliance')">▧ Documents</button>
+  <h4>MANAGEMENT</h4>
+  <button class="navbtn" onclick="openModule('Approvals & Audit')">✓ Approvals</button>
+  <button class="navbtn" onclick="openModule('MIS & Reports')">▥ MIS Reports</button>
+</aside>
+
+<main class="main">
+<section id="dashboard">
+  <div class="welcome">
+    <div>
+      <h1>Human Resource Management System</h1>
+      <p>Centralised workforce, project and HR administration.</p>
+    </div>
+    <span class="pill">CENTRALISED HRMS</span>
+  </div>
+
+  <h2 class="heading">Management Overview</h2>
+  <div class="stats">
+    <div class="stat"><small>Total Employees</small><strong>—</strong></div>
+    <div class="stat"><small>Present Today</small><strong>—</strong></div>
+    <div class="stat"><small>Pending Approvals</small><strong>—</strong></div>
+    <div class="stat"><small>Active Projects</small><strong>4</strong></div>
+  </div>
+  <h2 class="heading">HRMS Modules</h2>
+  <div class="modules" id="dashboardModules"></div>
+  <div class="notice">Dashboard figures will be populated after secure backend integration. No employee information is currently being retrieved or displayed.</div>
+</section>
+
+<section id="modules" class="hidden">
+  <h2 class="heading">All HRMS Modules</h2>
+  <div class="modules" id="allModules"></div>
+</section>
+
+<section id="modulePage" class="hidden">
+  <div class="welcome">
+    <div><h1 id="moduleTitle">HRMS Module</h1><p>ON Engineers Group – Central HRMS</p></div>
+    <span class="pill">MODULE WORKSPACE</span>
+  </div>
+  <div class="panel">
+    <h3 id="moduleHeading">Module Overview</h3>
+    <p id="moduleDescription"></p>
+    <p><strong>Current status:</strong> Interface prepared. Database connection and authorised operations are pending implementation.</p>
+    <button class="navbtn active" onclick="showPage('modules')">← Back to All Modules</button>
+  </div>
+</section>
+
+<footer>© 2026 ON Engineers Group | Internal HR & Administration Portal</footer>
+</main>
+</div>
+
+<script>
+const modules = [
+ ["Dashboard & MIS","📊","Management dashboards, workforce summaries and reports."],
+ ["Recruitment","🧑‍💼","Candidate records, interviews and manpower requisitions."],
+ ["Employee Management","👥","Employee registration, HR verification, EP numbers and master records."],
+ ["Onboarding & Deployment","🏗️","Joining formalities, project allocation and deployment."],
+ ["Attendance Management","🕒","Daily IN/OUT attendance, shifts and regularisation."],
+ ["Leave Management","📅","Leave applications, approvals and leave balances."],
+ ["Gate Pass Management","🚪","Gate pass requests, approvals and return records."],
+ ["Overtime Management","⏱️","OT entries, verification and approval."],
+ ["Payroll & Overtime","💰","Salary, allowances, deductions and monthly payroll."],
+ ["PF & ESIC Compliance","🛡️","UAN, ESIC records and statutory contributions."],
+ ["Documents & Compliance","📁","Employee documents, licences, insurance and expiry tracking."],
+ ["Assets & PPE","🦺","Asset and PPE issue, return and condition records."],
+ ["Training & Safety","🎓","Induction, safety training and certification records."],
+ ["Contractors & Vendors","🏢","Contractor, supplier and vendor master records."],
+ ["Manpower Management","👷","Manpower planning, deployment and project rates."],
+ ["Employee Transfers","🔁","Company, project and designation transfers."],
+ ["Grievances","🗣️","Employee complaints and resolution tracking."],
+ ["Disciplinary Records","⚖️","Incident reports, notices and disciplinary actions."],
+ ["Resignation & Exit","📤","Resignation, exit clearance and exit documents."],
+ ["Full & Final Settlement","🧾","Final earnings, deductions and settlement records."],
+ ["Approvals & Audit","✅","Approval workflows, decision history and audit logs."],
+ ["Reimbursements & Advances","💳","Expense claims, advances and recovery tracking."]
+];
+
+function createCards(target,items){
+ document.getElementById(target).innerHTML=items.map(m=>`
+ <article class="card" onclick="openModule('${m[0]}')">
+ <div class="symbol">${m[1]}</div><h3>${m[0]}</h3>
+ <p>${m[2]}</p><button type="button">Open workspace →</button>
+ </article>`).join("");
+}
+function showPage(page,button){
+ ["dashboard","modules","modulePage"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+ document.getElementById(page).classList.remove("hidden");
+ document.querySelectorAll(".navbtn").forEach(b=>b.classList.remove("active"));
+ if(button)button.classList.add("active");
+}
+function openModule(name){
+ const m=modules.find(x=>x[0]===name);
+ document.getElementById("moduleTitle").textContent=name;
+ document.getElementById("moduleHeading").textContent=name+" Workspace";
+ document.getElementById("moduleDescription").textContent=m?m[2]:"HRMS module workspace.";
+ showPage("modulePage");
+}
+createCards("dashboardModules",modules.slice(0,8));
+createCards("allModules",modules);
+
+// ---------- HRMS endpoint and Google Identity Services configuration ----------
+const HRMS_MASTER_URL = "https://script.google.com/macros/s/AKfycbzAIZYUtzdXm00aea59RAChDezwqPQgFEZHSOConYUwcFYnLAXYGPWuetiDQhSF4qFfzQ/exec";
+const GOOGLE_CLIENT_ID = "652789086013-l6lb4jnj8gs9tlfkv8nuoppvi3agmbij.apps.googleusercontent.com";
+let hrmsCompanies = [];
+let hrmsProjects = [];
+let loginTimeout = null;
+let currentUser = null;
+
+function setAuthStatus(message, kind){
+  const el=document.getElementById("authStatus");
+  el.textContent=message;
+  el.className="auth-status"+(kind?" "+kind:"");
 }
 
-function hrmsNorm_(s) {
-  return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+function initializeGoogleSignIn(){
+  if(!window.google || !google.accounts || !google.accounts.id){
+    setAuthStatus("Google sign-in could not load. Refresh the page and try again.","error");
+    return;
+  }
+  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredential,auto_select:false});
+  google.accounts.id.renderButton(document.getElementById("googleSignInButton"),{theme:"outline",size:"large",shape:"rectangular",text:"signin_with",width:280});
+  setAuthStatus("Sign in using your registered Google account.");
 }
 
-function hrmsHeaderMap_(sheet) {
-  if (!sheet || sheet.getLastColumn() < 1) {
-    throw new Error('A required sheet or its header row is missing.');
+// Login via JSONP (script tag). Works reliably with Apps Script, no iframe/postMessage needed.
+function handleGoogleCredential(response){
+  if(!response || !response.credential){setAuthStatus("Google did not return a sign-in credential. Please try again.","error");return;}
+  setAuthStatus("Verifying your account and HRMS access…");
+
+  const cbName="hrmsLoginCb_"+Date.now();
+  const scriptId="hrms-login-script";
+  const old=document.getElementById(scriptId);if(old)old.remove();
+
+  function cleanup(){
+    if(loginTimeout){clearTimeout(loginTimeout);loginTimeout=null;}
+    delete window[cbName];
+    const s=document.getElementById(scriptId);if(s)s.remove();
   }
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
-  var map = {};
-  headers.forEach(function (value, index) {
-    var key = hrmsNorm_(value);
-    if (key) map[key] = index;
-  });
-  return map;
+
+  window[cbName]=function(result){
+    cleanup();
+    if(!result || !result.ok){setAuthStatus((result && result.message)||"Access denied. Contact HR/Admin.","error");return;}
+    onLoginSuccess(result.user);
+  };
+
+  loginTimeout=setTimeout(function(){
+    cleanup();
+    setAuthStatus("No response from the HRMS server. Check that the Apps Script deployment is set to 'Anyone' and the URL is correct.","error");
+  },25000);
+
+  const script=document.createElement("script");
+  script.id=scriptId;
+  script.src=HRMS_MASTER_URL+"?action=verifyLogin&credential="+encodeURIComponent(response.credential)+"&callback="+cbName;
+  script.onerror=function(){
+    cleanup();
+    setAuthStatus("Could not reach the HRMS server. Check the Apps Script deployment (Who has access: Anyone) and try again.","error");
+  };
+  document.head.appendChild(script);
 }
 
-function hrmsHas_(map, header) {
-  return map[hrmsNorm_(header)] !== undefined;
+function onLoginSuccess(user){
+  currentUser=user;
+  document.getElementById("authScreen").classList.add("hidden");
+  document.getElementById("hrmsLayout").classList.remove("hidden");
+  document.getElementById("userChip").textContent=currentUser.name || currentUser.email;
+  document.getElementById("signOutButton").classList.remove("hidden");
+  loadHrmsMasters();
 }
 
-function hrmsCell_(row, map, header) {
-  var k = hrmsNorm_(header);
-  return map[k] === undefined ? '' : row[map[k]];
+function signOut(){
+  currentUser=null;
+  if(loginTimeout){clearTimeout(loginTimeout);loginTimeout=null;}
+  document.getElementById("hrmsLayout").classList.add("hidden");
+  document.getElementById("authScreen").classList.remove("hidden");
+  document.getElementById("userChip").textContent="";
+  document.getElementById("signOutButton").classList.add("hidden");
+  setAuthStatus("You have signed out. Sign in again to continue.");
+  if(window.google && google.accounts && google.accounts.id)google.accounts.id.disableAutoSelect();
 }
 
-function hrmsIsActive_(value) {
-  return String(value || '').trim().toLowerCase() === 'active';
-}
-
-/* -------------------- WEB APP ENTRY POINTS -------------------- */
-
-function doGet(e) {
-  var params = (e && e.parameter) ? e.parameter : {};
-  var action = String(params.action || '');
-  var callback = String(params.callback || '');
-  var response;
-
-  try {
-    if (action === 'masters') {
-      response = hrmsGetMasterDropdownData_();
-    } else if (action === 'verifyLogin') {
-      response = hrmsVerifyGoogleUser_(String(params.credential || ''));
-    } else {
-      response = {
-        system: 'ON ENGINEERS GROUP HRMS',
-        status: 'Backend is running',
-        mode: 'Safe foundation - read-only masters and login verification'
-      };
-    }
-  } catch (error) {
-    response = { ok: false, message: error && error.message ? error.message : 'Request failed.' };
-  }
-
-  return hrmsOutput_(response, callback);
-}
-
-// POST kept only as a harmless fallback; the page now uses GET (JSONP).
-function doPost(e) {
-  return hrmsOutput_({ ok: false, message: 'Use the current HRMS page to sign in.' }, '');
-}
-
-function hrmsOutput_(obj, callback) {
-  var json = JSON.stringify(obj);
-  if (/^[A-Za-z_$][0-9A-Za-z_$]*$/.test(callback || '')) {
-    return ContentService
-      .createTextOutput(callback + '(' + json + ');')
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
-  }
-  return ContentService
-    .createTextOutput(json)
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-/* -------------------- MASTERS (READ-ONLY) -------------------- */
-
-function hrmsGetMasterDropdownData_() {
-  var ss = hrmsSpreadsheet_();
-  var companySheet = ss.getSheetByName(HRMS_CONFIG.COMPANY_SHEET);
-  var projectSheet = ss.getSheetByName(HRMS_CONFIG.PROJECT_SHEET);
-  if (!companySheet || !projectSheet) {
-    throw new Error('Company_Master or Project_Master sheet is missing.');
-  }
-
-  var companyMap = hrmsHeaderMap_(companySheet);
-  var projectMap = hrmsHeaderMap_(projectSheet);
-
-  ['Company_ID', 'Company_Name', 'Company_Code', 'Status'].forEach(function (h) {
-    if (!hrmsHas_(companyMap, h)) throw new Error('Company_Master is missing column: ' + h);
-  });
-  ['Project_ID', 'Company_ID', 'Project_Name', 'Location', 'State', 'Status'].forEach(function (h) {
-    if (!hrmsHas_(projectMap, h)) throw new Error('Project_Master is missing column: ' + h);
-  });
-
-  var companyRows = companySheet.getLastRow() > 1
-    ? companySheet.getRange(2, 1, companySheet.getLastRow() - 1, companySheet.getLastColumn()).getDisplayValues()
-    : [];
-  var projectRows = projectSheet.getLastRow() > 1
-    ? projectSheet.getRange(2, 1, projectSheet.getLastRow() - 1, projectSheet.getLastColumn()).getDisplayValues()
-    : [];
-
-  var companies = companyRows
-    .filter(function (r) {
-      return hrmsCell_(r, companyMap, 'Company_ID') && hrmsIsActive_(hrmsCell_(r, companyMap, 'Status'));
-    })
-    .map(function (r) {
-      return {
-        companyId: String(hrmsCell_(r, companyMap, 'Company_ID')),
-        companyName: String(hrmsCell_(r, companyMap, 'Company_Name')),
-        companyCode: String(hrmsCell_(r, companyMap, 'Company_Code'))
-      };
-    });
-
-  var projects = projectRows
-    .filter(function (r) {
-      return hrmsCell_(r, projectMap, 'Project_ID') && hrmsIsActive_(hrmsCell_(r, projectMap, 'Status'));
-    })
-    .map(function (r) {
-      return {
-        projectId: String(hrmsCell_(r, projectMap, 'Project_ID')),
-        companyId: String(hrmsCell_(r, projectMap, 'Company_ID')),
-        projectName: String(hrmsCell_(r, projectMap, 'Project_Name')),
-        location: String(hrmsCell_(r, projectMap, 'Location')),
-        state: String(hrmsCell_(r, projectMap, 'State'))
-      };
-    });
-
-  return { ok: true, companies: companies, projects: projects };
-}
-
-/* -------------------- GOOGLE SIGN-IN / HRMS ACCESS -------------------- */
-
-function hrmsVerifyGoogleUser_(credential) {
-  if (!credential) throw new Error('Google sign-in credential is missing.');
-
-  var tokenUrl = 'https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential);
-  var response = UrlFetchApp.fetch(tokenUrl, { muteHttpExceptions: true });
-
-  if (response.getResponseCode() !== 200) {
-    throw new Error('Google account verification failed. Please sign in again.');
-  }
-
-  var token = JSON.parse(response.getContentText());
-  if (String(token.aud || '') !== HRMS_CONFIG.GOOGLE_CLIENT_ID) {
-    throw new Error('Google sign-in client mismatch.');
-  }
-  if (String(token.email_verified).toLowerCase() !== 'true') {
-    throw new Error('Your Google email is not verified.');
-  }
-  if (!token.email) throw new Error('Google did not provide an email address.');
-  if (Number(token.exp) * 1000 < Date.now()) {
-    throw new Error('Google sign-in expired. Please sign in again.');
-  }
-
-  var sheet = hrmsSpreadsheet_().getSheetByName(HRMS_CONFIG.USER_ROLES_SHEET);
-  if (!sheet || sheet.getLastRow() < 2) {
-    throw new Error('No HRMS users are configured. Ask HR/Admin to add your email in User_Roles.');
-  }
-
-  var map = hrmsHeaderMap_(sheet);
-  ['Google_Email', 'Role', 'Access_Status'].forEach(function (h) {
-    if (!hrmsHas_(map, h)) throw new Error('User_Roles is missing column: ' + h);
-  });
-
-  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).getDisplayValues();
-  var email = String(token.email).trim().toLowerCase();
-  var matched = null;
-
-  for (var i = 0; i < rows.length; i++) {
-    var rowEmail = String(hrmsCell_(rows[i], map, 'Google_Email') || '').trim().toLowerCase();
-    var accessStatus = String(hrmsCell_(rows[i], map, 'Access_Status') || '').trim().toLowerCase();
-    if (rowEmail === email && accessStatus === 'active') {
-      matched = rows[i];
-      break;
-    }
-  }
-
-  if (!matched) {
-    throw new Error('Access denied. Your Google email (' + email + ') is not active in HRMS User_Roles. Contact HR/Admin.');
-  }
-
-  return {
-    ok: true,
-    user: {
-      email: email,
-      name: String(token.name || email),
-      employeeId: String(hrmsCell_(matched, map, 'Employee_ID') || ''),
-      companyId: String(hrmsCell_(matched, map, 'Company_ID') || ''),
-      projectId: String(hrmsCell_(matched, map, 'Project_ID') || ''),
-      role: String(hrmsCell_(matched, map, 'Role') || '')
+function loadHrmsMasters(){
+  const callbackName="onHrmsMastersLoaded";
+  window[callbackName]=function(data){
+    try{
+      if(!data || !Array.isArray(data.companies) || !Array.isArray(data.projects))return;
+      hrmsCompanies=data.companies;hrmsProjects=data.projects;
+      populateCompanyDropdown();populateProjectDropdown();
+    }finally{
+      delete window[callbackName];
+      const old=document.getElementById("hrms-master-script");if(old)old.remove();
     }
   };
+  const script=document.createElement("script");
+  script.id="hrms-master-script";
+  script.src=HRMS_MASTER_URL+"?action=masters&callback="+callbackName;
+  script.onerror=function(){const old=document.getElementById("hrms-master-script");if(old)old.remove();delete window[callbackName];console.warn("HRMS master data could not be loaded. Check Apps Script deployment access.");};
+  document.head.appendChild(script);
 }
 
-/* -------------------- DIAGNOSTICS (NON-DESTRUCTIVE) -------------------- */
-
-function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('HRMS Safe Checks')
-    .addItem('Test database connection', 'testDatabaseConnection')
-    .addItem('Test company/project dropdown data', 'testMasterDropdownData')
-    .addToUi();
+function populateCompanyDropdown(){
+  const select=document.getElementById("company");const selected=select.value||"all";
+  select.innerHTML='<option value="all">All Companies</option>'+hrmsCompanies.map(c=>`<option value="${escapeHtml(c.companyId)}">${escapeHtml(c.companyName)}</option>`).join("");
+  select.value=hrmsCompanies.some(c=>c.companyId===selected)?selected:"all";
 }
-
-function testDatabaseConnection() {
-  var ss = hrmsSpreadsheet_();
-  var names = ss.getSheets().map(function (sheet) { return sheet.getName(); });
-  Logger.log('Database connected: ' + ss.getName());
-  Logger.log('Total sheets: ' + names.length);
-  Logger.log('Sheet names: ' + names.join(' | '));
+function populateProjectDropdown(){
+  const select=document.getElementById("project");const companyId=document.getElementById("company").value;const selected=select.value||"all";
+  const filtered=companyId==="all"?hrmsProjects:hrmsProjects.filter(p=>p.companyId===companyId);
+  select.innerHTML='<option value="all">All Projects</option>'+filtered.map(p=>`<option value="${escapeHtml(p.projectId)}">${escapeHtml(p.projectName)}</option>`).join("");
+  select.value=filtered.some(p=>p.projectId===selected)?selected:"all";
 }
-
-function testMasterDropdownData() {
-  Logger.log(JSON.stringify(hrmsGetMasterDropdownData_(), null, 2));
-}
-
-// RUN ONCE from the editor: grants the external-request permission and checks User_Roles headers.
-function authorizeAndCheck() {
-  var r = UrlFetchApp.fetch('https://oauth2.googleapis.com/tokeninfo?id_token=test', { muteHttpExceptions: true });
-  Logger.log('UrlFetch OK (HTTP ' + r.getResponseCode() + ' is expected here)');
-
-  var sheet = hrmsSpreadsheet_().getSheetByName(HRMS_CONFIG.USER_ROLES_SHEET);
-  if (!sheet) { Logger.log('MISSING SHEET: ' + HRMS_CONFIG.USER_ROLES_SHEET); return; }
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
-  Logger.log('User_Roles headers: ' + JSON.stringify(headers));
-  Logger.log('User rows: ' + (sheet.getLastRow() - 1));
-}
+function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
+document.getElementById("company").addEventListener("change",populateProjectDropdown);
+window.addEventListener("load",initializeGoogleSignIn);
+</script>
+</body>
+</html>
