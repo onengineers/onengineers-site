@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -226,6 +227,7 @@ const HRMS_ALLOWED_ORIGIN = "https://onengineers.github.io";
 let hrmsCompanies = [];
 let hrmsProjects = [];
 let authState = "";
+let authTimeout = null;
 let currentUser = null;
 
 function setAuthStatus(message, kind){
@@ -247,6 +249,8 @@ function initializeGoogleSignIn(){
 function handleGoogleCredential(response){
   if(!response || !response.credential){setAuthStatus("Google did not return a sign-in credential. Please try again.","error");return;}
   authState=(window.crypto && crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2);
+  if(authTimeout)clearTimeout(authTimeout);
+  authTimeout=setTimeout(function(){setAuthStatus("No sign-in response received. Check the Apps Script deployment and try again.","error");},20000);
   setAuthStatus("Verifying your account and HRMS access…");
   const frame=document.getElementById("hrmsAuthFrame");
   const form=document.getElementById("hrmsAuthForm");
@@ -257,8 +261,13 @@ function handleGoogleCredential(response){
 }
 
 window.addEventListener("message",function(event){
-  const frame=document.getElementById("hrmsAuthFrame");
-  if(!frame || event.source!==frame.contentWindow || !event.data || event.data.type!=="HRMS_AUTH_RESULT" || event.data.state!==authState)return;
+  // Apps Script HtmlService can create a nested frame, so event.source may not
+  // equal the outer form iframe. Validate Google origin and the one-time nonce.
+  const trustedGoogleOrigin = event.origin === "null" ||
+    event.origin === "https://script.google.com" ||
+    /^https:\/\/(?:[a-z0-9-]+\.)*script\.googleusercontent\.com$/i.test(event.origin);
+  if(!trustedGoogleOrigin || !event.data || event.data.type!=="HRMS_AUTH_RESULT" || !authState || event.data.state!==authState)return;
+  if(authTimeout){clearTimeout(authTimeout);authTimeout=null;}
   const result=event.data.payload;
   if(!result || !result.ok){setAuthStatus((result && result.message)||"Access denied. Contact HR/Admin.","error");return;}
   currentUser=result.user;
@@ -271,6 +280,7 @@ window.addEventListener("message",function(event){
 
 function signOut(){
   currentUser=null;authState="";
+  if(authTimeout){clearTimeout(authTimeout);authTimeout=null;}
   document.getElementById("hrmsLayout").classList.add("hidden");
   document.getElementById("authScreen").classList.remove("hidden");
   document.getElementById("userChip").textContent="";
