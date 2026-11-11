@@ -1,229 +1,199 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>On Engineers & Construction</title>
-<meta name="description" content="Civil construction, contractor and manpower management, and gate pass registration for site workers.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ON Engineers Group | HRMS</title>
 <style>
-:root{
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#F3F4F5; --ink:#14212E; --navy:#0E2A47; --steel:#56667A; --line:#C9D0D6; --hi:#F2B705; --on-navy:#F3F6F9;
-  color-scheme:light;
+:root {
+  --navy:#142b49;
+  --blue:#2463a6;
+  --bg:#f3f6fb;
+  --white:#fff;
+  --text:#263449;
+  --muted:#718096;
+  --border:#e5eaf1;
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){--bg:#101820;--ink:#E8EDF1;--steel:#9AA8B5;--line:#2B3946;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,select,input{font:inherit}
+.topbar{height:68px;background:var(--navy);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;border:2px solid white;border-radius:9px;display:grid;place-items:center;font-weight:bold}
+.brand h2{font-size:16px;margin:0 0 4px}
+.brand small{color:#cbd8e8}
+.top-actions{display:flex;align-items:center;gap:10px}
+.top-actions select{max-width:190px}
+select,input{padding:9px;border:1px solid var(--border);border-radius:7px;background:white;color:var(--text)}
+.layout{display:flex;min-height:calc(100vh - 68px)}
+.sidebar{width:245px;background:white;border-right:1px solid var(--border);padding:18px 12px;flex-shrink:0}
+.sidebar h4{font-size:10px;color:#8996a8;letter-spacing:1.2px;padding:8px 12px;margin:12px 0 5px}
+.navbtn{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:7px;color:#475569;cursor:pointer;font-size:13px;margin:2px 0}
+.navbtn:hover,.navbtn.active{background:#eaf2fb;color:var(--blue);font-weight:bold}
+.main{padding:26px;width:100%;max-width:1500px;margin:auto}
+.welcome{background:linear-gradient(115deg,#17375e,#2878b9);padding:25px;border-radius:13px;color:white;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.welcome h1{font-size:23px;margin:0 0 8px}
+.welcome p{font-size:13px;color:#e1eafa;margin:0}
+.pill{background:#ffffff20;border:1px solid #ffffff55;padding:9px 13px;border-radius:20px;font-size:11px}
+.heading{font-size:17px;margin:25px 0 14px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:14px}
+.stat,.card,.panel{background:white;border:1px solid var(--border);border-radius:10px;padding:17px}
+.stat small{color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:25px;margin-top:9px;color:var(--navy)}
+.modules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{cursor:pointer;transition:.15s}
+.card:hover{border-color:#8eb6e1;transform:translateY(-2px)}
+.symbol{width:39px;height:39px;background:#eaf2fb;color:var(--blue);border-radius:9px;display:grid;place-items:center;font-size:20px;margin-bottom:12px}
+.card h3{font-size:14px;margin:0 0 7px}
+.card p{font-size:11px;line-height:1.5;color:var(--muted);margin:0}
+.card button{margin-top:13px;border:0;background:transparent;color:var(--blue);font-size:12px;padding:0;cursor:pointer}
+.panel{margin-top:18px}
+.panel h3{font-size:15px;margin:0 0 12px}
+.panel p{font-size:13px;color:var(--muted);line-height:1.6}
+.notice{padding:12px;background:#fff8e8;border:1px solid #f1dfb3;border-radius:8px;color:#76591b;font-size:12px;line-height:1.5;margin-top:20px}
+.hidden{display:none}
+footer{text-align:center;color:#8a96a7;font-size:11px;padding:25px}
+@media(max-width:1000px){.modules{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){
+ .layout{display:block}.sidebar{width:100%;display:flex;overflow-x:auto;padding:8px;gap:5px}
+ .sidebar h4{display:none}.navbtn{white-space:nowrap;width:auto}
+ .main{padding:15px}.modules{grid-template-columns:repeat(2,1fr)}
+ .topbar{padding:0 12px}.brand small{display:none}.top-actions select{max-width:115px}
 }
-:root[data-theme="dark"]{--bg:#101820;--ink:#E8EDF1;--steel:#9AA8B5;--line:#2B3946;color-scheme:dark}
-html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
-*,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.6 "Source Sans 3",system-ui,sans-serif}
-h1,h2,h3{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;line-height:1.05;margin:0}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--hi);outline-offset:3px}
-.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
-header.top{background:var(--navy);color:var(--on-navy)}
-header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:18px;padding-bottom:18px;flex-wrap:wrap}
-.brand{font:700 22px/1 "Barlow Condensed",sans-serif;letter-spacing:.04em;text-decoration:none}
-nav{display:flex;gap:22px;font-size:16px;flex-wrap:wrap}
-nav a{text-decoration:none;opacity:.85}
-nav a:hover{opacity:1;text-decoration:underline;text-decoration-color:var(--hi);text-underline-offset:6px}
-
-.hero{background:var(--navy);color:var(--on-navy);padding:56px 0 72px}
-.hero .wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:48px;align-items:center}
-.hero h1{font-size:clamp(44px,7vw,84px);margin-bottom:20px}
-.hero p.lead{font-size:20px;max-width:34ch;color:#C9D6E2;margin:0 0 28px}
-.btn{display:inline-block;background:var(--hi);color:#14212E;font-weight:600;padding:14px 26px;border-radius:2px;text-decoration:none;border:0;cursor:pointer;font-size:17px;font-family:inherit}
-.btn:hover{background:#FFC929}
-.btn.ghost{background:transparent;color:inherit;border:2px solid currentColor;margin-left:10px}
-.board{background:#F7F7F4;color:#14212E;border:6px solid #14212E;box-shadow:0 0 0 3px var(--hi);}
-.board .stripe{height:22px;background:repeating-linear-gradient(-45deg,#14212E 0 14px,var(--hi) 14px 28px)}
-.board .in{padding:22px 24px 26px}
-.board h2{font-size:30px;margin-bottom:10px}
-.board ul{margin:0;padding:0;list-style:none}
-.board li{padding:10px 0;border-top:1px solid #C9D0D6;font-size:17px}
-
-section{padding:76px 0}
-section h2{font-size:clamp(34px,5vw,52px);margin-bottom:12px}
-.intro{color:var(--steel);max-width:52ch;margin:0 0 40px}
-.rows{border-top:2px solid var(--ink)}
-.row{display:grid;grid-template-columns:1fr 1.4fr;gap:32px;padding:26px 0;border-bottom:1px solid var(--line)}
-.row h3{font-size:28px}
-.row p{margin:0;color:var(--steel);max-width:56ch}
-
-.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--ink)}
-.steps li{counter-increment:s;padding:22px 20px 0 0}
-.steps li::before{content:counter(s);display:block;font:700 44px/1 "Barlow Condensed",sans-serif;color:var(--hi);-webkit-text-stroke:1px var(--ink);margin-bottom:10px}
-.steps strong{display:block;font-size:19px}
-.steps span{color:var(--steel);font-size:16px;display:block}
-
-.register{background:var(--navy);color:var(--on-navy)}
-.register .wrap{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
-.register p{color:#C9D6E2;max-width:46ch;margin:0}
-.register small{display:block;margin-top:10px;color:#9FB2C4;font-size:15px}
-#note{min-height:1.4em;margin-top:12px;color:var(--hi);font-size:15px}
-
-.contact dl{display:grid;grid-template-columns:140px 1fr;gap:14px 24px;margin:0;border-top:2px solid var(--ink);padding-top:22px}
-.contact dt{font-weight:600}
-.contact dd{margin:0;color:var(--steel)}
-footer{border-top:1px solid var(--line);padding:26px 0;color:var(--steel);font-size:15px}
-
-@media (max-width:820px){
-  .hero .wrap{grid-template-columns:1fr}
-  .row{grid-template-columns:1fr;gap:8px}
-  .steps{grid-template-columns:1fr 1fr}
-  .btn.ghost{margin:12px 0 0}
-  .contact dl{grid-template-columns:1fr;gap:2px 0}
-  .contact dd{margin-bottom:12px}
-}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(max-width:420px){.modules{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-
-<header class="top">
-  <div class="wrap">
-    <a class="brand" href="#top">ON ENGINEERS &amp; CONSTRUCTION</a>
-    <nav aria-label="Main">
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
-      <a href="#projects">Projects</a>
-      <a href="#entry">Site entry</a>
-      <a href="#register">Gate pass</a>
-      <a href="#contact">Contact</a>
-      <a href="https://script.google.com/macros/s/AKfycbzAIZYUtzdXm00aea59RAChDezwqPQgFEZHSOConYUwcFYnLAXYGPWuetiDQhSF4qFfzQ/exec?page=attendance" target="_blank" rel="noopener">Staff login</a>
-    </nav>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">ON</div>
+    <div><h2>ON ENGINEERS GROUP</h2><small>HRMS MANAGEMENT PORTAL</small></div>
+  </div>
+  <div class="top-actions">
+    <select id="company">
+      <option value="all">All Companies</option>
+      <option>ON Engineers & Construction</option>
+      <option>ON Engineers & Infratech Pvt. Ltd.</option>
+    </select>
+    <select id="project">
+      <option value="all">All Projects</option>
+      <option>Reliance Jamnagar</option>
+      <option>JSW MPCL Nariyara</option>
+      <option>JSW Utkal Energy</option>
+      <option>JSW Akaltara</option>
+    </select>
   </div>
 </header>
 
-<main id="top">
-<div class="hero">
-  <div class="wrap">
+<div class="layout">
+<aside class="sidebar">
+  <h4>MAIN MENU</h4>
+  <button class="navbtn active" onclick="showPage('dashboard',this)">▦ Dashboard</button>
+  <button class="navbtn" onclick="showPage('modules',this)">▤ All HRMS Modules</button>
+  <h4>ADMINISTRATION</h4>
+  <button class="navbtn" onclick="openModule('Employee Management')">♙ Employees</button>
+  <button class="navbtn" onclick="openModule('Attendance Management')">◷ Attendance</button>
+  <button class="navbtn" onclick="openModule('Leave Management')">▣ Leave</button>
+  <button class="navbtn" onclick="openModule('Payroll & Overtime')">₹ Payroll</button>
+  <button class="navbtn" onclick="openModule('Documents & Compliance')">▧ Documents</button>
+  <h4>MANAGEMENT</h4>
+  <button class="navbtn" onclick="openModule('Approvals & Audit')">✓ Approvals</button>
+  <button class="navbtn" onclick="openModule('MIS & Reports')">▥ MIS Reports</button>
+</aside>
+
+<main class="main">
+<section id="dashboard">
+  <div class="welcome">
     <div>
-      <h1>Civil construction with every worker accounted for.</h1>
-      <p class="lead">We build, manage contractors and keep sites safe and compliant, from first excavation to handover.</p>
-      <a class="btn" href="#register">Register for a gate pass</a>
-      <a class="btn ghost" href="#services">Our services</a>
+      <h1>Human Resource Management System</h1>
+      <p>Centralised workforce, project and HR administration.</p>
     </div>
-    <aside class="board" aria-label="Site entry notice">
-      <div class="stripe"></div>
-      <div class="in">
-        <h2>Site entry notice</h2>
-        <ul>
-          <li>Every worker needs a gate pass before entering site.</li>
-          <li>Register once with your ID and bank details.</li>
-          <li>Site admin verifies and approves your entry.</li>
-          <li>Carry the printed pass at all times.</li>
-        </ul>
-      </div>
-    </aside>
+    <span class="pill">CENTRALISED HRMS</span>
   </div>
+
+  <h2 class="heading">Management Overview</h2>
+  <div class="stats">
+    <div class="stat"><small>Total Employees</small><strong>—</strong></div>
+    <div class="stat"><small>Present Today</small><strong>—</strong></div>
+    <div class="stat"><small>Pending Approvals</small><strong>—</strong></div>
+    <div class="stat"><small>Active Projects</small><strong>4</strong></div>
+  </div>
+  <h2 class="heading">HRMS Modules</h2>
+  <div class="modules" id="dashboardModules"></div>
+  <div class="notice">Dashboard figures will be populated after secure backend integration. No employee information is currently being retrieved or displayed.</div>
+</section>
+
+<section id="modules" class="hidden">
+  <h2 class="heading">All HRMS Modules</h2>
+  <div class="modules" id="allModules"></div>
+</section>
+
+<section id="modulePage" class="hidden">
+  <div class="welcome">
+    <div><h1 id="moduleTitle">HRMS Module</h1><p>ON Engineers Group – Central HRMS</p></div>
+    <span class="pill">MODULE WORKSPACE</span>
+  </div>
+  <div class="panel">
+    <h3 id="moduleHeading">Module Overview</h3>
+    <p id="moduleDescription"></p>
+    <p><strong>Current status:</strong> Interface prepared. Database connection and authorised operations are pending implementation.</p>
+    <button class="navbtn active" onclick="showPage('modules')">← Back to All Modules</button>
+  </div>
+</section>
+
+<footer>© 2026 ON Engineers Group | Internal HR & Administration Portal</footer>
+</main>
 </div>
 
-<section id="about">
-  <div class="wrap">
-    <h2>About us</h2>
-    <p class="intro">On Engineers &amp; Construction provides civil construction and site manpower services. Our team has worked on large sites across India, including Reliance and JSW projects, Odisha, Bilaspur and Akaltara in Chhattisgarh, and Delhi.</p>
-    <div class="rows">
-      <div class="row"><h3>Safety on every site</h3><p>Workers are registered, inducted and issued a gate pass before they enter.</p></div>
-      <div class="row"><h3>Records you can audit</h3><p>Attendance, contractor and statutory details are kept in one organised system.</p></div>
-      <div class="row"><h3>Clear daily reporting</h3><p>Owners get a short daily report of manpower, work done and issues.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="services" style="padding-top:0">
-  <div class="wrap">
-    <h2>What we do</h2>
-    <p class="intro">Practical construction and site administration, run by people who have worked on live sites.</p>
-    <div class="rows">
-      <div class="row"><h3>Civil construction</h3><p>Residential and commercial buildings, foundations, slabs, brickwork and finishing, delivered to drawings and schedule.</p></div>
-      <div class="row"><h3>Roads and drainage</h3><p>Excavation, drainage lines and site development with daily progress recorded and reported.</p></div>
-      <div class="row"><h3>Contractor and manpower management</h3><p>Sourcing, onboarding and tracking skilled and unskilled workers across contractors and sites.</p></div>
-      <div class="row"><h3>Labour compliance</h3><p>Worker records, PF/UAN details, safety induction and gate pass control kept organised and audit-ready.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="projects" style="padding-top:0">
-  <div class="wrap">
-    <h2>Projects</h2>
-    <p class="intro">Sites where our team has worked.</p>
-    <div class="rows">
-      <div class="row"><h3>Reliance</h3><p>Civil construction work and site manpower support at a Reliance project.</p></div>
-      <div class="row"><h3>JSW, Odisha</h3><p>Civil construction and manpower support at the JSW site in Odisha.</p></div>
-      <div class="row"><h3>Bilaspur and Akaltara, Chhattisgarh</h3><p>Construction and site work across Bilaspur and Akaltara.</p></div>
-      <div class="row"><h3>Delhi</h3><p>Civil construction and site management in Delhi.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="entry" style="padding-top:0">
-  <div class="wrap">
-    <h2>How site entry works</h2>
-    <p class="intro">A simple process so no one enters site without being registered and verified.</p>
-    <ol class="steps">
-      <li><strong>Register</strong><span>Fill the online gate pass form.</span></li>
-      <li><strong>Verify</strong><span>Admin checks your details and documents.</span></li>
-      <li><strong>Approve</strong><span>Your status changes to approved.</span></li>
-      <li><strong>Collect pass</strong><span>Receive your printed gate pass with your ID.</span></li>
-    </ol>
-  </div>
-</section>
-
-<section class="register" id="register">
-  <div class="wrap">
-    <div>
-      <h2>Gate pass registration</h2>
-      <p>Takes about five minutes. Keep your Aadhaar, bank passbook and UAN number ready.</p>
-      <small>We collect only the name, contact, ID and bank details needed for site entry and payroll. They are visible only to site admin.</small>
-    </div>
-    <div>
-      <a class="btn" id="formLink" href="#register">Open registration form</a>
-      <div id="note" role="status"></div>
-    </div>
-  </div>
-</section>
-
-<section class="contact" id="contact">
-  <div class="wrap">
-    <h2>Contact</h2>
-    <p class="intro">Questions about a project or your gate pass? Reach the site office.</p>
-    <dl>
-      <dt>Phone</dt><dd><a href="tel:+918232905269">+91 82329 05269</a></dd>
-      <dt>WhatsApp</dt><dd><a href="https://wa.me/918232905269" target="_blank" rel="noopener">Message us on WhatsApp</a></dd>
-      <dt>Email</dt><dd><a href="mailto:manjay8232@gmail.com">manjay8232@gmail.com</a></dd>
-      <dt>Office</dt><dd>Site office details on request. Call or message us.</dd>
-      <dt>Hours</dt><dd>Monday to Saturday, 9:00 am to 6:00 pm</dd>
-    </dl>
-  </div>
-</section>
-</main>
-
-<footer>
-  <div class="wrap">© 2026 On Engineers &amp; Construction. All rights reserved. · <a href="https://script.google.com/macros/s/AKfycbzAIZYUtzdXm00aea59RAChDezwqPQgFEZHSOConYUwcFYnLAXYGPWuetiDQhSF4qFfzQ/exec?page=attendance" target="_blank" rel="noopener">Site supervisor attendance</a></div>
-</footer>
-
 <script>
-  // Paste your Google Form fill link between the quotes to activate the button.
-  var FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeoV-M1C9fh1c3CP4wzmD-J_ya82OevWK7Upez3jZv_FAMAbw/viewform";
-  var link = document.getElementById("formLink");
-  var note = document.getElementById("note");
-  if (FORM_URL) {
-    link.href = FORM_URL;
-    link.target = "_blank";
-    link.rel = "noopener";
-  } else {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      note.textContent = "Form link not added yet. Add your Google Form link in the code.";
-    });
-  }
+const modules = [
+ ["Dashboard & MIS","📊","Management dashboards, workforce summaries and reports."],
+ ["Recruitment","🧑‍💼","Candidate records, interviews and manpower requisitions."],
+ ["Employee Management","👥","Employee registration, HR verification, EP numbers and master records."],
+ ["Onboarding & Deployment","🏗️","Joining formalities, project allocation and deployment."],
+ ["Attendance Management","🕒","Daily IN/OUT attendance, shifts and regularisation."],
+ ["Leave Management","📅","Leave applications, approvals and leave balances."],
+ ["Gate Pass Management","🚪","Gate pass requests, approvals and return records."],
+ ["Overtime Management","⏱️","OT entries, verification and approval."],
+ ["Payroll & Overtime","💰","Salary, allowances, deductions and monthly payroll."],
+ ["PF & ESIC Compliance","🛡️","UAN, ESIC records and statutory contributions."],
+ ["Documents & Compliance","📁","Employee documents, licences, insurance and expiry tracking."],
+ ["Assets & PPE","🦺","Asset and PPE issue, return and condition records."],
+ ["Training & Safety","🎓","Induction, safety training and certification records."],
+ ["Contractors & Vendors","🏢","Contractor, supplier and vendor master records."],
+ ["Manpower Management","👷","Manpower planning, deployment and project rates."],
+ ["Employee Transfers","🔁","Company, project and designation transfers."],
+ ["Grievances","🗣️","Employee complaints and resolution tracking."],
+ ["Disciplinary Records","⚖️","Incident reports, notices and disciplinary actions."],
+ ["Resignation & Exit","📤","Resignation, exit clearance and exit documents."],
+ ["Full & Final Settlement","🧾","Final earnings, deductions and settlement records."],
+ ["Approvals & Audit","✅","Approval workflows, decision history and audit logs."],
+ ["Reimbursements & Advances","💳","Expense claims, advances and recovery tracking."]
+];
+
+function createCards(target,items){
+ document.getElementById(target).innerHTML=items.map(m=>`
+ <article class="card" onclick="openModule('${m[0]}')">
+ <div class="symbol">${m[1]}</div><h3>${m[0]}</h3>
+ <p>${m[2]}</p><button type="button">Open workspace →</button>
+ </article>`).join("");
+}
+function showPage(page,button){
+ ["dashboard","modules","modulePage"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+ document.getElementById(page).classList.remove("hidden");
+ document.querySelectorAll(".navbtn").forEach(b=>b.classList.remove("active"));
+ if(button)button.classList.add("active");
+}
+function openModule(name){
+ const m=modules.find(x=>x[0]===name);
+ document.getElementById("moduleTitle").textContent=name;
+ document.getElementById("moduleHeading").textContent=name+" Workspace";
+ document.getElementById("moduleDescription").textContent=m?m[2]:"HRMS module workspace.";
+ showPage("modulePage");
+}
+createCards("dashboardModules",modules.slice(0,8));
+createCards("allModules",modules);
 </script>
 </body>
 </html>
