@@ -336,10 +336,10 @@ function saveEmployee(){
  if(!d.Company_ID){$("empFormMsg").textContent="Please select a company.";return;}
  if(d.Mobile&&!/^\d{10}$/.test(d.Mobile)){$("empFormMsg").textContent="Mobile must be exactly 10 digits.";return;}
  const b=$("empSaveBtn");b.disabled=true;b.textContent="Saving…";$("empFormMsg").textContent="";
- api("saveEmployee",{data:JSON.stringify(d)}).then(r=>{closeEmployeeForm();toast((r.created?"Employee added: ":"Employee updated: ")+r.employeeId);loadEmployees();})
+ api("saveEmployee",{data:JSON.stringify(d)}).then(r=>{closeEmployeeForm();toast((r.created?"Employee added: ":"Employee updated: ")+r.employeeId+(r.auditWarning?" — WARNING: "+r.auditWarning:""),r.auditWarning?12000:3500);loadEmployees();})
  .catch(e=>{$("empFormMsg").textContent=e.message;}).finally(()=>{b.disabled=false;b.textContent="Save";});
 }
-function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3500);}
+function toast(m,ms){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),ms||3500);}
 window.addEventListener("load",initializeGoogleSignIn);
 </script>
 </body>
